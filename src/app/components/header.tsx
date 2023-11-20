@@ -12,7 +12,7 @@ export const Header = () => {
       </Link>
       <div className="flex items-center gap-8">
         <SignedIn>
-          <UserButton />
+          <UserButton afterSignOutUrl="/" />
         </SignedIn>
         <SignedOut>
           <SignInButton mode="modal">
