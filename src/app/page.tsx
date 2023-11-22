@@ -1,22 +1,36 @@
+import Stripe from 'stripe'
+
 import { IProductProps } from './../types/product-props'
 import { Product } from './components/product'
 
 export default async function Home() {
-  const response = await fetch(
-    'https://fakestoreapi.com/products?offset=0&limit=10',
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2023-10-16',
+  })
+  const response = await stripe.products.list()
+  const products: IProductProps[] = await Promise.all(
+    response.data.map(async (product) => {
+      const price = await stripe.prices.list({
+        product: product.id,
+      })
+      return {
+        id: product.id,
+        name: product.name,
+        price: price.data[0].unit_amount,
+        image: product.images[0],
+        description: product.description,
+        currency: price.data[0].currency,
+      }
+    }),
   )
-  const products = await response.json()
 
   return (
     <div className="mx-auto max-w-7xl px-8 py-8 xl:px-8">
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-6">
-        {products.map((product: IProductProps) => {
+        {products.map((product) => {
           return <Product key={String(product.id)} product={product} />
         })}
       </div>
     </div>
   )
 }
-
-// https://fakestoreapi.com/products
-// https://api.escuelajs.co/api/v1/products

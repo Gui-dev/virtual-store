@@ -17,7 +17,7 @@ export const ProductImage = ({ product, fillProps }: IProductImage) => {
   return fillProps ? (
     <Image
       src={product.image}
-      alt={product.title}
+      alt={product.name}
       fill
       className={`object-cover ${loading ? 'scale-110 blur-3xl grayscale' : 'scale-100 blur-0 grayscale-0'}`}
       onLoad={() => setLoading(false)}
@@ -25,7 +25,7 @@ export const ProductImage = ({ product, fillProps }: IProductImage) => {
   ) : (
     <Image
       src={product.image}
-      alt={product.title}
+      alt={product.name}
       height={400}
       width={700}
       className={`object-cover ${loading
