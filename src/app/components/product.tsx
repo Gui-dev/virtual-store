@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { IProductProps } from '@/types/product-props'
 import { ProductImage } from './product-image'
 import { formatPrice } from '@/lib/utils'
+import { AddCart } from './add-cart'
 
 interface IProduct {
   product: IProductProps
@@ -13,7 +14,7 @@ export const Product = ({ product }: IProduct) => {
 
   return (
     <div className="flex h-96 flex-col bg-slate-800 p-5 shadow-lg">
-      <Link href="/" key={product.id}>
+      <Link href={`/product/${product.id}`} key={product.id}>
         <div className="relative h-56 flex-1">
           <ProductImage product={product} fillProps />
         </div>
@@ -24,9 +25,7 @@ export const Product = ({ product }: IProduct) => {
           <p className="text-md text-teal-300">{formattedPrice}</p>
         </div>
       </Link>
-      <button className="rounded-md bg-teal-600 px-3.5 py-2.5 text-sm text-white">
-        Comprar
-      </button>
+      <AddCart product={product} />
     </div>
   )
 }
