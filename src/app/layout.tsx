@@ -6,6 +6,7 @@ import { ptBR } from '@clerk/localizations'
 
 import { Header } from './components/header'
 import './globals.css'
+import { Hydrate } from './components/hydrate'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,8 +20,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <ClerkProvider localization={ptBR}>
       <html lang="en">
         <body className={`${inter.className} bg-slate-700`}>
-          <Header />
-          <main className="h-screen">{children}</main>
+          <Hydrate>
+            <Header />
+            <main className="h-screen">{children}</main>
+          </Hydrate>
         </body>
       </html>
     </ClerkProvider>

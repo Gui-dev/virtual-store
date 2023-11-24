@@ -1,12 +1,8 @@
-import Stripe from 'stripe'
-
 import { IProductProps } from './../types/product-props'
 import { Product } from './components/product'
+import { stripe } from '@/lib/stripe'
 
 export default async function Home() {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2023-10-16',
-  })
   const response = await stripe.products.list()
   const products: IProductProps[] = await Promise.all(
     response.data.map(async (product) => {

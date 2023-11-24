@@ -1,8 +1,7 @@
-import Stripe from 'stripe'
-
 import { ProductImage } from '@/app/components/product-image'
 import { formatPrice } from '@/lib/utils'
 import { AddCart } from '@/app/components/add-cart'
+import { stripe } from '@/lib/stripe'
 
 type ProductDetailsProps = {
   params: {
@@ -11,9 +10,6 @@ type ProductDetailsProps = {
 }
 
 const getProduct = async (id: string) => {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2023-10-16',
-  })
   const response = await stripe.products.retrieve(id)
   const price = await stripe.prices.list({
     product: response.id,
