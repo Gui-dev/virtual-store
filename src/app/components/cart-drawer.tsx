@@ -4,6 +4,8 @@ import { IProductProps } from '@/types/product-props'
 import { CartItem } from './cart-item'
 import { useCartStore } from '@/hooks/store'
 import { formatPrice } from '@/lib/utils'
+import { CheckoutButton } from './checkout-button'
+import { Checkout } from './checkout'
 
 interface ICartDrawer {
   products: IProductProps[]
@@ -23,22 +25,16 @@ export const CartDrawer = ({ products }: ICartDrawer) => {
           <p>Carrinho vazio</p>
         </div>
       )}
-      {products.length > 0 && (
+      {products.length > 0 && store.onCheckout === 'cart' && (
         <div className="flex flex-col justify-center">
           {products.map((product) => {
             return <CartItem key={product.id} product={product} />
           })}
-          <div className="flex items-center justify-between">
-            <p className="text-base font-bold text-gray-300">Total</p>
-            <p className="text-2xl font-bold text-teal-600">
-              {formattedTotalPrice}
-            </p>
-          </div>
-          <button className="mt-10 flex h-8 items-center justify-center rounded-sm border border-teal-300 bg-teal-600 transition-colors hover:bg-teal-700">
-            Finalizar compra
-          </button>
+          <CheckoutButton totalPrice={formattedTotalPrice} />
         </div>
       )}
+
+      {store.onCheckout === 'checkout' && <Checkout />}
     </div>
   )
 }
