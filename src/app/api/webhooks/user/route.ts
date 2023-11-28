@@ -1,8 +1,10 @@
-import { prisma } from '@/lib/prisma'
 import { IncomingHttpHeaders } from 'http'
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { Webhook, WebhookRequiredHeaders } from 'svix'
+
+import { prisma } from '@/lib/prisma'
+import { stripe } from '@/lib/stripe'
 
 const webhookSecret = process.env.CLERK_WEBHHOK_SECRET || ''
 
@@ -47,12 +49,17 @@ const handler = async (request: Request) => {
   const eventType: EventType = event.type
   if (eventType === 'user.created' || eventType === 'user.updated') {
     const { id, first_name, last_name, email_addresses } = event.data
+    const customer = await stripe.customers.create({
+      name: `${first_name} ${last_name}`,
+      email: email_addresses ? email_addresses[0].email_address : '',
+    })
     await prisma.user.upsert({
       where: {
         external_id: id as string,
       },
       create: {
         external_id: id as string,
+        stripe_customer_id: customer.id,
         first_name,
         last_name,
         email_addresses: email_addresses[0].email_address,
@@ -60,7 +67,6 @@ const handler = async (request: Request) => {
       update: {
         first_name,
         last_name,
-        email_addresses: email_addresses[0].email_address,
       },
     })
   }
