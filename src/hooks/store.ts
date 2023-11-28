@@ -4,16 +4,23 @@ import { IProductProps } from '@/types/product-props'
 
 type CartState = {
   cart: IProductProps[]
-  addProduct: (product: IProductProps) => void
-  removeProduct: (product: IProductProps) => void
   isOpen: boolean
+  onCheckout: 'cart' | 'checkout'
+  paymentIntent: string
+  removeProduct: (product: IProductProps) => void
+  addProduct: (product: IProductProps) => void
   toggleCart: () => void
+  setCheckout: (checkout: 'cart' | 'checkout') => void
+  setPaymentIntent: (paymentIntent: string) => void
 }
 
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       cart: [],
+      isOpen: false,
+      onCheckout: 'cart',
+      paymentIntent: '',
       addProduct: (item) =>
         set((state) => {
           const product = state.cart.find((p) => p.id === item.id)
@@ -50,8 +57,9 @@ export const useCartStore = create<CartState>()(
             return { cart: filteredCart }
           }
         }),
-      isOpen: false,
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+      setCheckout: (checkout) => set(() => ({ onCheckout: checkout })),
+      setPaymentIntent: (paymentIntent) => set(() => ({ paymentIntent })),
     }),
     {
       name: 'cart-storage',
