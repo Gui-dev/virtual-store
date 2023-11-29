@@ -6,7 +6,7 @@ import { Webhook, WebhookRequiredHeaders } from 'svix'
 import { prisma } from '@/lib/prisma'
 import { stripe } from '@/lib/stripe'
 
-const webhookSecret = process.env.CLERK_WEBHHOK_SECRET || ''
+const webhookSecret = process.env.CLERK_WEBHOOK_SECRET || ''
 
 type EventType = 'user.created' | 'user.updated' | '*'
 type EmailAddressType = {
