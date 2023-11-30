@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs'
 
 import { stripe } from '@/lib/stripe'
@@ -12,11 +12,10 @@ const calculateOrderAmount = (products: IProductProps[]): number => {
   return totalPrice
 }
 
-export const POST = async (request: Request) => {
+export const POST = async (request: NextRequest) => {
   const { userId } = auth()
   const { items, payment_intent_id } = await request.json()
-  console.log('ITEMS: ', items)
-  console.log('ID: ', payment_intent_id)
+
   if (!userId) {
     const login_url = new URL('/sign-up', request.url)
     return NextResponse.redirect(login_url)
