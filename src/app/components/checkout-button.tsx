@@ -13,8 +13,6 @@ export const CheckoutButton = ({ totalPrice }: ICheckoutButton) => {
   const { user } = useUser()
   const store = useCartStore()
 
-  console.log('USER: ', user)
-
   const handleCheckout = () => {
     if (!user) {
       store.toggleCart()
