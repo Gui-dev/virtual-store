@@ -23,16 +23,15 @@ model User {
 }
 
 model Order {
-  id                String   @id @default(uuid())
+  id                String    @id @default(uuid())
   user_id           String
-  product_id        String?
-  payment_intent_id String?  @unique
+  payment_intent_id String?   @unique
   amount            Float
   currency          String
   status            String
-  created_date      DateTime @default(now())
-  user              User     @relation(fields: [user_id], references: [id])
-  products          Product? @relation(fields: [product_id], references: [id])
+  created_date      DateTime  @default(now())
+  user              User      @relation(fields: [user_id], references: [id])
+  products          Product[]
 }
 
 model Product {

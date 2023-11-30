@@ -65,7 +65,7 @@ export const POST = async (request: NextRequest) => {
           data: {
             amount: total,
             products: {
-              delete: {},
+              deleteMany: {},
               create: items.map((item: IProductProps) => ({
                 name: item.name,
                 description: item.description,
