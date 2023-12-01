@@ -23,8 +23,8 @@ export const POST = async (request: NextRequest) => {
 
   // const customer_id = 'cus_P5uEvYd7S91qoM'
   const total = calculateOrderAmount(items)
-  const order_data = {
-    user: { connect: { id: '9a65819a-eae5-4c79-8289-29dc6a3ae5f8' } },
+  const orderData = {
+    user: { connect: { id: '0ba86e3c-868e-4fd0-af52-6fa04ce26ad2' } },
     amount: total,
     currency: 'brl',
     status: 'pending',
@@ -39,29 +39,28 @@ export const POST = async (request: NextRequest) => {
       })),
     },
   }
+
   if (payment_intent_id) {
     const current_intent = await stripe.paymentIntents.retrieve(
       payment_intent_id,
     )
+
     if (current_intent) {
-      const update_intent = await stripe.paymentIntents.update(
+      const updated_intent = await stripe.paymentIntents.update(
         payment_intent_id,
         {
           amount: total,
         },
       )
 
-      const [existing_order] = await Promise.all([
+      // eslint-disable-next-line no-unused-vars
+      const [existing_order, updated_order] = await Promise.all([
         prisma.order.findFirst({
-          where: {
-            payment_intent_id,
-          },
+          where: { payment_intent_id },
           include: { products: true },
         }),
         prisma.order.update({
-          where: {
-            payment_intent_id,
-          },
+          where: { payment_intent_id },
           data: {
             amount: total,
             products: {
@@ -79,15 +78,13 @@ export const POST = async (request: NextRequest) => {
       ])
 
       if (!existing_order) {
-        return NextResponse.json({
-          status: 404,
-          message: 'Order not found',
-        })
+        return new Response('Order not found', { status: 404 })
       }
-      return NextResponse.json({
-        status: 201,
-        data: update_intent,
-      })
+
+      return NextResponse.json(
+        { paymentIntent: updated_intent },
+        { status: 200 },
+      )
     }
   } else {
     const payment_intent = await stripe.paymentIntents.create({
@@ -96,20 +93,12 @@ export const POST = async (request: NextRequest) => {
       automatic_payment_methods: { enabled: true },
     })
 
-    order_data.payment_intent_id = payment_intent.id
-    const new_order = await prisma.order.create({
-      data: order_data,
+    orderData.payment_intent_id = payment_intent.id
+
+    await prisma.order.create({
+      data: orderData,
     })
 
-    console.log('ORDER: ', new_order)
-
-    return NextResponse.json(
-      {
-        payment_intent,
-      },
-      {
-        status: 201,
-      },
-    )
+    return NextResponse.json({ payment_intent }, { status: 200 })
   }
 }
