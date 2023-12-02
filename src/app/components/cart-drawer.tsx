@@ -30,8 +30,11 @@ export const CartDrawer = ({ products }: ICartDrawer) => {
           {products.map((product) => {
             return <CartItem key={product.id} product={product} />
           })}
-          <CheckoutButton totalPrice={formattedTotalPrice} />
         </div>
+      )}
+
+      {store.cart.length > 0 && store.onCheckout === 'cart' && (
+        <CheckoutButton totalPrice={formattedTotalPrice} />
       )}
 
       {store.onCheckout === 'checkout' && <Checkout />}

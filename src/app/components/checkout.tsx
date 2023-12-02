@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 
@@ -15,7 +15,7 @@ export const Checkout = () => {
   const store = useCartStore()
   const [clientSecret, setClientSecret] = useState('')
 
-  useEffect(() => {
+  const fetchLoadPaymentIntent = useCallback(async () => {
     fetch('/api/create-payment-intent', {
       method: 'POST',
       headers: {
@@ -26,12 +26,20 @@ export const Checkout = () => {
         payment_intent_id: store.paymentIntent,
       }),
     })
-      .then((response) => response.json())
+      .then((res) => {
+        return res.json()
+      })
       .then((data) => {
-        store.setPaymentIntent(data.payment_intent?.id)
+        store.setPaymentIntent(data.payment_intent.id)
         setClientSecret(data.payment_intent?.client_secret)
       })
-  }, [store])
+  }, [store, store.cart, store.paymentIntent])
+
+  useEffect(() => {
+    fetchLoadPaymentIntent()
+  }, [fetchLoadPaymentIntent])
+
+  console.log(clientSecret)
 
   const options: StripeElementsOptions = {
     clientSecret,
@@ -41,19 +49,17 @@ export const Checkout = () => {
     },
   }
 
-  console.log('clientSecret: ', clientSecret)
-
   return (
     <div className="flex">
-      {clientSecret ? (
-        <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm client_secret={clientSecret} />
-        </Elements>
+      <Elements options={options} stripe={stripePromise}>
+        <CheckoutForm client_secret={clientSecret} />
+      </Elements>
+      {/* {clientSecret ? (
       ) : (
         <div>
           <p>Carregando...</p>
         </div>
-      )}
+      )} */}
     </div>
   )
 }

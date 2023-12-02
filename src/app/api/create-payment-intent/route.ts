@@ -78,11 +78,14 @@ export const POST = async (request: NextRequest) => {
       ])
 
       if (!existing_order) {
-        return new Response('Order not found', { status: 404 })
+        return NextResponse.json({
+          status: 404,
+          message: 'Order not found',
+        })
       }
 
       return NextResponse.json(
-        { paymentIntent: updated_intent },
+        { payment_intent: updated_intent },
         { status: 200 },
       )
     }
