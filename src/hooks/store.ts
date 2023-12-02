@@ -5,12 +5,12 @@ import { IProductProps } from '@/types/product-props'
 type CartState = {
   cart: IProductProps[]
   isOpen: boolean
-  onCheckout: 'cart' | 'checkout'
+  onCheckout: 'cart' | 'checkout' | 'success'
   paymentIntent: string
   removeProduct: (product: IProductProps) => void
   addProduct: (product: IProductProps) => void
   toggleCart: () => void
-  setCheckout: (checkout: 'cart' | 'checkout') => void
+  setCheckout: (checkout: 'cart' | 'checkout' | 'success') => void
   setPaymentIntent: (paymentIntent: string) => void
 }
 

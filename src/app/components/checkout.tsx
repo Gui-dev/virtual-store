@@ -1,8 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js'
+import { Elements } from '@stripe/react-stripe-js'
 
 import { useCartStore } from '@/hooks/store'
+import { CheckoutForm } from './checkout-form'
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+)
 
 export const Checkout = () => {
   const store = useCartStore()
@@ -21,17 +28,32 @@ export const Checkout = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        store.setPaymentIntent(data.paymentIntent)
-        setClientSecret(data.clientSecret)
-        console.log('DATA: ', data)
+        store.setPaymentIntent(data.payment_intent?.id)
+        setClientSecret(data.payment_intent?.client_secret)
       })
-  }, [store, store.cart, store.paymentIntent])
+  }, [store])
 
-  console.log('SECRET: ', clientSecret)
+  const options: StripeElementsOptions = {
+    clientSecret,
+    appearance: {
+      theme: 'night',
+      labels: 'floating',
+    },
+  }
+
+  console.log('clientSecret: ', clientSecret)
 
   return (
     <div className="flex">
-      <h1>CHECKOUT</h1>
+      {clientSecret ? (
+        <Elements options={options} stripe={stripePromise}>
+          <CheckoutForm client_secret={clientSecret} />
+        </Elements>
+      ) : (
+        <div>
+          <p>Carregando...</p>
+        </div>
+      )}
     </div>
   )
 }

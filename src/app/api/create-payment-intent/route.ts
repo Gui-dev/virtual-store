@@ -21,7 +21,7 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.redirect(login_url)
   }
 
-  // const customer_id = 'cus_P5uEvYd7S91qoM'
+  // const customer_id = 'cus_P6d7sMNQXdZf7I'
   const total = calculateOrderAmount(items)
   const orderData = {
     user: { connect: { id: '0ba86e3c-868e-4fd0-af52-6fa04ce26ad2' } },
