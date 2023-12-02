@@ -33,7 +33,7 @@ export const Checkout = () => {
         store.setPaymentIntent(data.payment_intent.id)
         setClientSecret(data.payment_intent?.client_secret)
       })
-  }, [store, store.cart, store.paymentIntent])
+  }, [store])
 
   useEffect(() => {
     fetchLoadPaymentIntent()
@@ -51,15 +51,15 @@ export const Checkout = () => {
 
   return (
     <div className="flex">
-      <Elements options={options} stripe={stripePromise}>
-        <CheckoutForm client_secret={clientSecret} />
-      </Elements>
-      {/* {clientSecret ? (
+      {clientSecret ? (
+        <Elements options={options} stripe={stripePromise}>
+          <CheckoutForm client_secret={clientSecret} />
+        </Elements>
       ) : (
         <div>
           <p>Carregando...</p>
         </div>
-      )} */}
+      )}
     </div>
   )
 }
