@@ -21,10 +21,20 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.redirect(login_url)
   }
 
-  // const customer_id = 'cus_P6d7sMNQXdZf7I'
+  const current_user = await prisma.user.findUnique({
+    where: {
+      external_id: userId,
+    },
+  })
+
+  if (!current_user) {
+    const login_url = new URL('/sign-up', request.url)
+    return NextResponse.redirect(login_url)
+  }
+
   const total = calculateOrderAmount(items)
   const orderData = {
-    user: { connect: { id: '0ba86e3c-868e-4fd0-af52-6fa04ce26ad2' } },
+    user: { connect: { id: current_user.id } },
     amount: total,
     currency: 'brl',
     status: 'pending',

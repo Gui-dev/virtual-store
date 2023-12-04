@@ -32,7 +32,6 @@ const handler = async (request: NextRequest) => {
   switch (event.type) {
     case 'payment_intent.created':
       const payment_intent_created = event.data.object as Stripe.PaymentIntent
-
       console.log(payment_intent_created)
       break
     case 'charge.succeeded':
