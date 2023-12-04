@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { PlusIcon, MinusIcon } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 import { IProductProps } from '@/types/product-props'
 import { formatPrice } from '@/lib/utils'
@@ -22,7 +23,7 @@ export const CartItem = ({ product }: ICartItem) => {
   }
 
   return (
-    <div className="flex gap-4 py-4">
+    <motion.div className="flex gap-4 py-4" layout>
       <Image
         src={product.image}
         alt={product.name}
@@ -51,6 +52,6 @@ export const CartItem = ({ product }: ICartItem) => {
         </div>
         <p className="text-sm font-bold text-teal-600">{formattedPrice}</p>
       </div>
-    </div>
+    </motion.div>
   )
 }

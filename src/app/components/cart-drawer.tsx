@@ -1,11 +1,14 @@
 'use client'
 
+import { motion } from 'framer-motion'
+
 import { IProductProps } from '@/types/product-props'
 import { CartItem } from './cart-item'
 import { useCartStore } from '@/hooks/store'
 import { formatPrice } from '@/lib/utils'
 import { CheckoutButton } from './checkout-button'
 import { Checkout } from './checkout'
+import { OrderCompleted } from './order-completed'
 
 interface ICartDrawer {
   products: IProductProps[]
@@ -19,7 +22,12 @@ export const CartDrawer = ({ products }: ICartDrawer) => {
   const formattedTotalPrice = formatPrice(totalPrice)
 
   return (
-    <div className="flex flex-col px-8">
+    <motion.div
+      className="flex flex-col px-8"
+      initial={{ opacity: 0, rotateZ: -10, scale: 0.5 }}
+      animate={{ opacity: 0.75, rotateZ: 0, scale: 1 }}
+      exit={{ opacity: 0, rotateZ: -10, scale: 0.5 }}
+    >
       {products.length === 0 && (
         <div className="mt-6 flex items-center justify-center">
           <p>Carrinho vazio</p>
@@ -38,6 +46,7 @@ export const CartDrawer = ({ products }: ICartDrawer) => {
       )}
 
       {store.onCheckout === 'checkout' && <Checkout />}
-    </div>
+      {store.onCheckout === 'success' && <OrderCompleted />}
+    </motion.div>
   )
 }
