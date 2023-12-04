@@ -28,7 +28,7 @@ export const CartDrawer = ({ products }: ICartDrawer) => {
       animate={{ opacity: 0.75, rotateZ: 0, scale: 1 }}
       exit={{ opacity: 0, rotateZ: -10, scale: 0.5 }}
     >
-      {products.length === 0 && (
+      {products.length === 0 && store.onCheckout === 'cart' && (
         <div className="mt-6 flex items-center justify-center">
           <p>Carrinho vazio</p>
         </div>
