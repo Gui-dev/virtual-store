@@ -9,6 +9,7 @@ type CartState = {
   paymentIntent: string
   removeProduct: (product: IProductProps) => void
   addProduct: (product: IProductProps) => void
+  clearCart: () => void
   toggleCart: () => void
   setCheckout: (checkout: 'cart' | 'checkout' | 'success') => void
   setPaymentIntent: (paymentIntent: string) => void
@@ -57,6 +58,7 @@ export const useCartStore = create<CartState>()(
             return { cart: filteredCart }
           }
         }),
+      clearCart: () => set(() => ({ cart: [] })),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       setCheckout: (checkout) => set(() => ({ onCheckout: checkout })),
       setPaymentIntent: (paymentIntent) => set(() => ({ paymentIntent })),
